@@ -35,6 +35,7 @@ services:
       - "traefik.http.routers.openclaw.tls=true"
       - "traefik.http.routers.openclaw.tls.certresolver=myresolver"
       - "traefik.http.routers.openclaw.middlewares=SecHeaders@file,openclaw-auth@file"
+      - "traefik.http.middlewares.openclaw-auth.basicauth.users=alex:$2y$05$QyHncXKNV6PNtItjTavP6eEAsqp/7EC0XlNt8eb6T3XQ5XwBSpMta"
       - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
 networks:
