@@ -5,34 +5,35 @@ services:
     restart: unless-stopped
     volumes:
       - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_NUM_CTX=8192
     expose:
       - "11434"
     networks:
-      - web
-
+      - internal
+      
   openclaw:
     image: ghcr.io/openclaw/openclaw:latest
     container_name: openclaw
     restart: unless-stopped
     depends_on:
       - ollama
+    env_file:
+      - .env
     expose:
       - "18789"
     volumes:
       - openclaw_data:/home/node/.openclaw
-      # Optionnel si tu veux piloter la conf par fichier dès le départ
-      # - ./openclaw/openclaw.json:/home/node/.openclaw/openclaw.json:ro
     networks:
       - web
+      - internal
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_web"
-
       - "traefik.http.routers.openclaw.rule=Host(`oc.alexandrecadene.com`)"
       - "traefik.http.routers.openclaw.entrypoints=websecure"
       - "traefik.http.routers.openclaw.tls=true"
       - "traefik.http.routers.openclaw.tls.certresolver=myresolver"
-
       - "traefik.http.routers.openclaw.middlewares=SecHeaders@file,openclaw-auth@file"
       - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
@@ -40,6 +41,8 @@ networks:
   web:
     external: true
     name: traefik_web
+  internal:
+    internal: true
 
 volumes:
   ollama_data:
