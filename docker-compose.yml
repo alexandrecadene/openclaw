@@ -25,7 +25,7 @@ services:
     volumes:
       - openclaw_data:/home/node/.openclaw
     networks:
-      - web
+      - traefik_web
       - internal
     labels:
       - "traefik.enable=true"
@@ -38,9 +38,8 @@ services:
       - "traefik.http.services.openclaw.loadbalancer.server.port=18789"
 
 networks:
-  web:
+  traefik_web:
     external: true
-    name: traefik_web
   internal:
     internal: true
 
